@@ -1,3 +1,4 @@
+
 from flask import Flask, request, jsonify
 import time
 import requests
@@ -104,6 +105,3 @@ def hello():
 
 if __name__ == '__main__':
     server.run(debug=True, port=8080)
-
-
-
