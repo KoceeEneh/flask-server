@@ -3,10 +3,6 @@ import time
 import requests
 import ngrok
 
-listener = ngrok.forward("localhost:8080",authtoken_from_env=True , domain="example.ngrok.app" )
-
-
-print(f"Ingress established at: {listener.url()}");
 # Creating instance of the Flask object
 server = Flask(__name__)
 
@@ -96,7 +92,7 @@ def hello():
 
     temperature = weather_data['temperature']
     location = weather_data['location']
-    greeting_message = f"Hello, {visitor_name}! The temperature is {temperature} Degree Celcius in {location}."
+    greeting_message = f"Hello!,{visitor_name}The temperature is {temperature} Degree Celcius in {location}."
 
     return jsonify({
         "greeting": greeting_message,
