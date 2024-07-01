@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 import time
 import requests
-import ngrok
+from waitress import serve
+
 
 # Creating instance of the Flask object
 server = Flask(__name__)
@@ -57,9 +58,11 @@ def user_request():
     if ip == "Failed to fetch IP":
         return jsonify({"error": "Failed to fetch client IP"}), 500
 
+
     geolocation = fetch_geolocation(ip)
     if "error" in geolocation:
         return jsonify(geolocation), 500
+        
 
     lat = geolocation.get('lat')
     lon = geolocation.get('lon')
@@ -103,5 +106,5 @@ def hello():
     })
 
 if __name__ == '__main__':
-    server.run(debug=True, port=8080)
-    
+    serve(server , host = "0.0.0.0" ,threads = 4)
+    # server.run(debug=True, port=8080)
