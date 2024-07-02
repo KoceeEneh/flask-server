@@ -1,11 +1,15 @@
-from flask import Flask, request, jsonify
-import time
-import requests
+from flask import Flask, request, jsonify , abort
+from pyngrok import ngrok
 from waitress import serve
+import time 
+import requests
+import os
 
+os.environ["NGROK_AUTHTOKEN"] = "2ickq1aBVx1dOBvl8jEreBS7TGs_2rcT92KfCT9ExruvQqnNp"
 
-# Creating instance of the Flask object
+# instance of the Flask object
 server = Flask(__name__)
+
 
 # Makeing request for IP 
 def fetch_client_ip():
@@ -74,7 +78,7 @@ def user_request():
 
 @server.route("/api/hello", methods=['GET'])
 def hello():
-    visitor_name = request.args.get('visitor_name', 'Guest')  # Default to 'Guest' if no name is provided
+    visitor_name = request.args.get('visitor_name', 'Guest')  # Default to 'Guest' 
    
     ip = fetch_client_ip()
     if ip == "Failed to fetch IP":
@@ -106,5 +110,17 @@ def hello():
     })
 
 if __name__ == '__main__':
-    serve(server , host = "0.0.0.0" ,threads = 4)
-    # server.run(debug=True, port=8080)
+    # serve(server , host = "0.0.0.0" ,threads = 4)
+    authtoken = os.getenv("NGROK_AUTHTOKEN")
+
+if authtoken:
+    ngrok.set_auth_token("2ickq1aBVx1dOBvl8jEreBS7TGs_2rcT92KfCT9ExruvQqnNp")
+else:
+    raise ValueError("Ngrok authtoken is not set in environment variables")
+
+
+listener = ngrok.connect(80)
+
+print(f"Ingress established at {listener.public_url}")
+
+server.run(port=80)
