@@ -1,11 +1,19 @@
 from flask import Flask, request, jsonify , abort
-from pyngrok import ngrok
-from waitress import serve
+# from pyngrok import ngrok
+# from waitress import serve
 import time 
 import requests
 import os
 
-os.environ["NGROK_AUTHTOKEN"] = "2ickq1aBVx1dOBvl8jEreBS7TGs_2rcT92KfCT9ExruvQqnNp"
+# os.environ["NGROK_AUTHTOKEN"] = "2ickq1aBVx1dOBvl8jEreBS7TGs_2rcT92KfCT9ExruvQqnNp"
+
+# authtoken = os.getenv("NGRO_AUTHTOKEN")
+
+# if authtoken:
+#     ngrok.set_auth_token("2ickq1aBVx1dOBvl8jEreBS7TGs_2rcT92KfCT9ExruvQqnNp")
+# else:
+#     raise ValueError("Ngrok authtoken is not set in environment variables")
+
 
 # instance of the Flask object
 server = Flask(__name__)
@@ -58,6 +66,7 @@ def home():
 
 @server.route("/user/api/", methods=['GET'])
 def user_request():
+
     ip = fetch_client_ip()
     if ip == "Failed to fetch IP":
         return jsonify({"error": "Failed to fetch client IP"}), 500
@@ -78,6 +87,7 @@ def user_request():
 
 @server.route("/api/hello", methods=['GET'])
 def hello():
+
     visitor_name = request.args.get('visitor_name', 'Guest')  # Default to 'Guest' 
    
     ip = fetch_client_ip()
@@ -99,28 +109,24 @@ def hello():
 
     temperature = weather_data['temperature']
     location = weather_data['location']
-    greeting_message = f"Hello!,{visitor_name}The temperature is {temperature} Degree Celcius in {location}."
+    greeting_message = f"Hello!,{visitor_name} The temperature is {temperature} Degree Celcius in {location}."
 
     return jsonify({
-        "greeting": greeting_message,
+
         "client_ip": ip,
+
         "city": city,
+
+         "greeting": greeting_message,
         # "temperature": temperature,
         # "location": location
     })
 
 if __name__ == '__main__':
-    # serve(server , host = "0.0.0.0" ,threads = 4)
-    authtoken = os.getenv("NGROK_AUTHTOKEN")
+  
+#     listener = ngrok.connect(80, region='us')
+#     print(f"Ingress established at {listener.public_url}")
+#     server.run(host='0.0.0.0', port=80)
 
-if authtoken:
-    ngrok.set_auth_token("2ickq1aBVx1dOBvl8jEreBS7TGs_2rcT92KfCT9ExruvQqnNp")
-else:
-    raise ValueError("Ngrok authtoken is not set in environment variables")
-
-
-listener = ngrok.connect(80)
-
-print(f"Ingress established at {listener.public_url}")
-
-server.run(port=80)
+# print(f"Ingress established at {listener.public_url}")
+    server.run( debug = [True] , host = "0.0.0.0" , port=80)
